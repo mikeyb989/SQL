@@ -29,17 +29,17 @@ VALUES
 
 #For this project, I used SQL to query the database to get the following information:
 
-#Find all items and order by price.
+--Find all items and order by price.--
 SELECT *
 FROM superstore
 ORDER BY price DESC;
 
-#Find the average price of items in the "Furnishings" category.
+--Find the average price of items in the "Furnishings" category.--
 SELECT ROUND(AVG(price),1) AS avg_price 
 FROM superstore
 WHERE category = "Furnishings";
 
-#Find all items in the "Kitchen Supplies" category with a price less than $120 and an average rating of 4.50 or higher.
+--Find all items in the "Kitchen Supplies" category with a price less than $120 and an average rating of 4.50 or higher.--
 SELECT item_id,
 item_name,
 price,
@@ -49,7 +49,7 @@ WHERE price < 120
 AND average_rating >= 4.50
 AND category = "Kitchen Supplies";
 
-#Find all items that have at least 50 units in stock and have an average rating of 4.60 or higher.
+--Find all items that have at least 50 units in stock and have an average rating of 4.60 or higher.--
 SELECT *
 FROM superstore
 WHERE stock_quantity >= 50
