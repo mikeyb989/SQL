@@ -57,3 +57,28 @@ VALUES
     ('Company II', 'Telecommunications', 110.5, 2000, 1, 21, 12, 4.9),
     ('Company JJ', 'Manufacturing', 370.0, 3100, 1, 20, 12, 7.6),
     ('Company KK', 'Healthcare', 150.2, 3400, 0, 16, 8, 5.3);
+
+#For this project, I used SQL to query the database to get the following information:
+
+--How do Fortune companies compare based on their maternity leave policies and what is the quality of leave provided?--
+SELECT company_name,
+revenue,
+employees,
+maternity_leave_weeks,
+CASE WHEN maternity_leave_weeks >= 14 THEN "Excellent"
+WHEN maternity_leave_weeks >= 11 THEN "Great"
+WHEN maternity_leave_weeks >= 8 THEN "Good"
+ELSE "Average"
+END AS "quality_of_maternity_leave_time"
+FROM fortune_companies
+ORDER BY maternity_leave_weeks DESC
+
+--Of all the retail companies that offer healthcare benefits and at least 12 days of PTO, what each company's average employee tenure?--
+SELECT company_name, 
+employees,
+avg_employee_tenure
+FROM fortune_companies
+WHERE industry = "Retail"
+AND healthcare_benefits = 1
+AND paid_time_off_days >= 12
+ORDER BY avg_employee_tenure DESC;
