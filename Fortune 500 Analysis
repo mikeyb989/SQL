@@ -1,4 +1,4 @@
-#This project utilizes the following data:
+#This project utilizes the following data (please note this data is fake and does not reflect any actual company data):
 
 CREATE TABLE fortune_companies (
     company_id INTEGER PRIMARY KEY,
@@ -73,12 +73,37 @@ END AS "quality_of_maternity_leave_time"
 FROM fortune_companies
 ORDER BY maternity_leave_weeks DESC
 
---Of all the retail companies that offer healthcare benefits and at least 12 days of PTO, what each company's average employee tenure?--
+--Of all the retail companies that offer healthcare benefits and at least 12 days of PTO, what is the total number of employees each company has?--
 SELECT company_name, 
 employees,
-avg_employee_tenure
 FROM fortune_companies
 WHERE industry = "Retail"
 AND healthcare_benefits = 1
 AND paid_time_off_days >= 12
-ORDER BY avg_employee_tenure DESC;
+ORDER BY employees DESC;
+
+--What is the average employee tenture for Fortune companies that offer the LEAST amount of PTO in their respective industry?--
+SELECT company_name,
+industry,
+MIN(paid_time_off_days) AS paid_time_off_days,
+avg_employee_tenure
+FROM fortune_companies
+GROUP BY industry
+ORDER BY paid_time_off_days DESC;
+
+--How does this compare to Fortune companies that offer the MOST amount of PTO in their respective industry?--
+SELECT company_name,
+industry,
+MAX(paid_time_off_days) AS paid_time_off_days,
+avg_employee_tenure
+FROM fortune_companies
+GROUP BY industry
+ORDER BY paid_time_off_days DESC;
+
+--What is the average number of maternity leave weeks offered for each respective industry that averages at least 200 billion dollars per year?--
+SELECT industry, 
+ROUND(AVG(maternity_leave_weeks),1) AS avg_maternity_leave_weeks,
+ROUND(AVG(revenue)) AS avg_revenue
+FROM fortune_companies
+GROUP BY industry
+HAVING avg_revenue >= 200
