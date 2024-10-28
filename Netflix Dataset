@@ -61,3 +61,13 @@ VALUES
 
 #For this project, I used SQL to query the database to get the following information:
 
+--List the directors that directed rated "TV-MA" TV shows.--
+SELECT np.director, 
+nti.title
+FROM netflix_people AS np
+LEFT JOIN netflix_titles_info AS nti
+ON np.show_id = nti.show_id
+WHERE type = 'TV Show'
+AND rating = 'TV-MA'
+AND np.director IS NOT null;
+
