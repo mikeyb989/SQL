@@ -71,3 +71,43 @@ WHERE type = 'TV Show'
 AND rating = 'TV-MA'
 AND np.director IS NOT null;
 
+--What is the most common rating for Movies?--
+SELECT rating,
+COUNT(*)
+FROM netflix_titles_info
+WHERE type = 'Movie'
+GROUP BY rating
+ORDER BY COUNT(*) DESC
+LIMIT 1;
+
+--What is the cast from the most recent Movie/TV-Show added to Netflix?--
+SELECT nti.title,
+np.cast,
+nti.date_added
+FROM netflix_titles_info AS nti
+LEFT JOIN netflix_people AS np
+ON nti.show_id = np.show_id
+ORDER BY nti.date_added DESC
+LIMIT 1;
+
+--List the titles and directors of all Movies/TV-Shows released in 2021 (only show titles that have a director).--
+SELECT nti.title,
+np.director
+FROM netflix_titles_info AS nti
+LEFT JOIN netflix_people AS np
+ON nti.show_id = np.show_id
+WHERE release_year = 2021
+AND np.director IS NOT NULL;
+
+--What show did Christian Schwochow direct and when was it added to Netflix?--
+SELECT nti.title,
+nti.date_added
+FROM netflix_titles_info AS nti
+JOIN netflix_people AS np
+ON nti.show_id = np.show_id
+WHERE np.director = 'Christian Schwochow';
+
+
+
+
+
