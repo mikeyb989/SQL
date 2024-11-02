@@ -1,2 +1,50 @@
-#In this SQL, I'm querying a database with multiple tables in it to quantify statistics about customer and order data. 
+#In this SQL, I'm querying a database with multiple tables (Customer and monthly sales information) in it to quantify statistics about customer and order data. 
+
+--How many orders were placed in February for an iPhone?--
+SELECT COUNT(orderID) AS number_of_orders
+FROM FebSales
+WHERE length(orderID) = 6
+AND Product = 'iPhone';
+
+--Select all customer account numbers that were placed in March.--
+SELECT DISTINCT customers.acctnum
+FROM customers
+INNER JOIN MarSales
+ON customers.order_id = MarSales.orderID
+WHERE length(orderID) = 6;
+
+--What were the three most expensive products sold in January and what were their prices?--
+SELECT DISTINCT product,
+price
+FROM JanSales
+WHERE length(orderID) = 6
+ORDER BY price DESC 
+LIMIT 3;
+
+--What is the total revenue of each product sold in March?--
+SELECT product,
+SUM(quantity) * price AS total_revenue
+FROM MarSales
+WHERE product <> ' '
+GROUP BY product;
+
+--How many customers ordered at least four products at a time in February, and what was the average amount spent for those customers?
+SELECT COUNT(DISTINCT cs.acctnum) AS num_of_customers,
+ROUND(AVG(fs.Quantity * fs.price),1) AS avg_spent
+FROM customers cs
+JOIN FebSales fs
+ON cs.order_id = fs.orderID
+WHERE fs.Quantity >= 4
+AND length(orderID) = 6;
+
+--What were the five most popular products purchased in January, how many of each were sold, and what were the individual cost and total revenue for each product?--
+SELECT Product,
+SUM(Quantity) AS total_units_sold,
+price AS individual_cost,
+ROUND(SUM(Quantity * price),1) AS total_revenue
+FROM JanSales
+WHERE length(orderID) = 6
+GROUP BY Product
+ORDER BY total_units_sold DESC
+LIMIT 5;
 
