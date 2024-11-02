@@ -1,1 +1,82 @@
-#For this project, I used a dataset detailing the top 50 songs for a particular week in 2021.
+#For this project, I am querying a dataset containing the top 50 songs for a particular week in 2021. The table contains the following columns:
+id integer PRIMARY KEY,
+artist_name varchar NOT NULL,
+track_name varchar NOT NULL,
+track_id varchar NOT NULL,
+popularity integer NOT NULL,
+danceability decimal(4,3) NOT NULL,
+energy decimal(4,3) NOT NULL,
+key integer NOT NULL,
+loudness decimal(5,3) NOT NULL,
+mode integer NOT NULL,
+speechiness decimal(5,4) NOT NULL,
+acousticness decimal(6,5) NOT NULL,
+instrumentalness text NOT NULL,
+liveness decimal(5,4) NOT NULL,
+valence decimal(4,3) NOT NULL,
+tempo decimal(6,3) NOT NULL,
+duration_ms integer NOT NULL,
+time_signature integer NOT NULL 
+
+#I used SQL to answer the following questions:
+
+--What is the "danceability" like for the top 10 most popular songs this week?--
+SELECT track_name,
+CASE WHEN danceability >= 0.78 THEN 'High Danceability,'
+WHEN danceability >= 0.57 THEN 'Moderate Danceability,'
+ELSE 'Low Danceability'
+END AS danceability_rating
+FROM Spotifydata
+ORDER BY popularity DESC
+LIMIT 10;
+
+--How does the valence compare to the top 5 songs versus the bottom 5 songs in this list?
+SELECT track_name,
+valence
+FROM Spotifydata
+ORDER BY popularity DESC
+LIMIT 5;
+
+SELECT track_name,
+valence
+FROM Spotifydata
+ORDER BY popularity ASC
+LIMIT 5;
+
+--Find the top 10 most "danceable" songs that are at least 3.50 minutes long.--
+SELECT track_name,
+ROUND(duration_ms / 60000.0,2) AS duration_minutes,
+danceability
+FROM Spotifydata
+WHERE duration_minutes >= 3.50
+ORDER BY danceability DESC
+LIMIT 10;
+
+--What is the most popular song out of all the songs that have a tempo less than 100 BPM?--
+SELECT track_name,
+popularity,
+tempo
+FROM Spotifydata
+WHERE tempo < 100
+ORDER BY popularity DESC
+LIMIT 1;
+
+--What is the average popularity for songs that are high, medium, and low energy and how many songs fit into each category?--
+SELECT 
+CASE WHEN energy >= 0.75 THEN 'High Energy'
+WHEN energy >= 0.59 THEN 'Medium Energy'
+ELSE 'Low Energy'
+END AS energy_level,
+COUNT(track_name) AS number_of_songs,
+ROUND(AVG(popularity),1) AS avg_popularity
+FROM Spotifydata
+GROUP BY energy_level;
+
+--Of all the artists that have at least 2 songs in the top 50, which artists have an average popularity of at least 90?--
+SELECT artist_name,
+ROUND(AVG(popularity),1) AS avg_popularity,
+COUNT(track_name) AS number_of_tracks
+FROM Spotifydata
+GROUP BY artist_name
+HAVING number_of_tracks > 1
+AND avg_popularity >= 90
