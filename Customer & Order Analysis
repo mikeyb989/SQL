@@ -55,3 +55,25 @@ FROM FebSales
 WHERE length(orderID) = 6
 AND location LIKE '%Los Angeles%'
 GROUP BY Product;
+
+--Which locations in California had at least three or more orders in the month of January?--
+SELECT DISTINCT location,
+COUNT(orderID) AS total_order_count
+FROM JanSales
+WHERE location LIKE '%CA%'
+GROUP BY location
+HAVING total_order_count >= 3;
+
+--How many of each type of charging cable were sold in the month of May?--
+SELECT Product,
+SUM(Quantity)
+FROM MaySales
+WHERE Product LIKE '%Charging%'
+GROUP BY Product;
+
+--What is the average amount spent per account in January?--
+SELECT ROUND(SUM(js.price * js.Quantity) / COUNT(DISTINCT cs.acctnum),2) AS avg_spent_per_account
+FROM customers cs
+LEFT JOIN JanSales js
+ON cs.order_id = js.orderID
+WHERE length(orderid) = 6;
