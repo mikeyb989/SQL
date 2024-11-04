@@ -1,4 +1,4 @@
-#This project utilizes the following data (please note this data is fake and does not reflect any actual company data):
+#This project utilizes the following (fictional) data:
 
 CREATE TABLE fortune_companies (
     company_id INTEGER PRIMARY KEY,
