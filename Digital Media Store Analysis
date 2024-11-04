@@ -1,3 +1,68 @@
 #This SQL query is designed to retrieve statistics from a database of a fictional digital media company. The database includes multiple tables—covering artists, albums, media tracks, invoices, and customers—to 
 analyze and quantify insights across different aspects of the company's media sales and customer interactions.
 
+--Find the first and last names for each customer in France and the total number of songs purchased by each customer.--
+SELECT c.FirstName,
+c.LastName,
+SUM(im.Quantity) AS total_quantity_purchased
+FROM customers c
+JOIN invoices i
+ON c.CustomerId = i.CustomerId
+JOIN invoice_items im
+ON i.InvoiceId = im.InvoiceId
+WHERE c.Country = 'France'
+GROUP BY c.FirstName, c.LastName;
+
+--What is the total revenue for each individual country?--
+SELECT c.Country,
+ROUND(SUM(im.UnitPrice * im.Quantity),2) AS total_revenue
+FROM customers c
+JOIN invoices i
+ON c.CustomerId = i.CustomerId
+JOIN invoice_items im
+ON i.InvoiceId = im.InvoiceId
+GROUP BY c.Country;
+
+--List all albums and the number of tracks in each one by Jimmy Page.--
+SELECT a.Title,
+COUNT(t.TrackId) AS number_of_tracks
+FROM albums a
+JOIN tracks t
+ON a.AlbumId = t.AlbumId
+WHERE t.Composer = 'Jimmmy Page'
+GROUP BY a.Title;
+
+--List all the track names and the album they belong to in the "Pop" genre.--
+SELECT t.Name AS track_name,
+a.Title AS album_name
+FROM tracks t
+JOIN albums a
+ON t.AlbumId = a.AlbumId
+JOIN genres g
+ON t.GenreId = g.GenreId
+WHERE g.Name = 'Pop';
+
+--Which country has the highest sales for the "Rock" genre?--
+WITH RockSales AS (
+SELECT c.Country,
+im.UnitPrice * im.Quantity AS revenue
+FROM customers c
+JOIN invoices i
+ON c.CustomerId = i.CustomerId
+JOIN invoice_items im
+ON i.InvoiceId = im.InvoiceId
+JOIN tracks t
+ON t.TrackId = im.TrackId
+JOIN genres g
+ON g.GenreId = t.GenreId
+WHERE g.Name = 'Rock'
+)
+
+SELECT Country,
+ROUND(SUM(revenue),2) AS total_revenue
+FROM RockSales
+GROUP BY Country
+ORDER BY total_revenue DESC
+LIMIT 1;
+
+
